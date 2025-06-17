@@ -72,7 +72,6 @@ p {
   text-align: center;
 }
 
-/* ✅ Responsive tweaks */
 @media (max-width: 480px) {
   .App {
     padding: 1rem;

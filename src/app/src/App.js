@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -9,41 +9,59 @@ function App() {
 
   const API_BASE = "http://localhost:8000";
 
-  // Fetch todos from backend
+  // fetch todos from backend
   const fetchTodos = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/todos/`);
-      if (!res.ok) throw new Error("Failed to fetch todos");
-      const data = await res.json();
-      setTodos(data);
+
+      // GET api call to fetch todos
+      const todoListResult = await fetch(`${API_BASE}/todos/`);
+      if (!todoListResult.ok)
+        throw new Error("Failed to fetch todos");
+
+      const todoList = await todoListResult.json();
+
+      // update the state
+      setTodos(todoList);
       setError("");
-    } catch (err) {
-      console.error(err);
+
+    } catch (error) {
+      console.error(error);
       setError("Error fetching todos.");
+
     } finally {
       setLoading(false);
     }
   };
 
-  // Submit new todo to backend
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!description.trim()) return;
+  // submit new todo to backend
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // if todo is an empty string, return
+    if (!description.trim()) {
+      setError("Todo cannot be empty.");
+      return;
+    }
 
     try {
-      const res = await fetch(`${API_BASE}/todos/`, {
+      // POST call to create a new todo
+      const updateTodoListResult = await fetch(`${API_BASE}/todos/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ description }),
       });
 
-      if (!res.ok) throw new Error("Failed to create todo");
+      if (!updateTodoListResult.ok) 
+        throw new Error("Failed to create todo");
+      
       setDescription("");
       fetchTodos(); // refresh list
-    } catch (err) {
-      console.error(err);
+
+    } catch (error) {
+      console.error(error);
       setError("Error adding todo.");
+
     }
   };
 
@@ -65,10 +83,10 @@ function App() {
         <button type="submit">Add</button>
       </form>
 
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
       {loading ? (
         <p>Loading...</p>
-      ) : error ? (
-        <p style={{ color: "red" }}>{error}</p>
       ) : todos.length === 0 ? (
         <p>No todos yet.</p>
       ) : (
