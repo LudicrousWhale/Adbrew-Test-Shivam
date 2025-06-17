@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Node/Yarn
+node_modules/
+.yarn/
+.yarnrc
+.eslintcache
+
+# Mongo / DB
+src/db/
+src/rest/mydatabase
+*.log
+
+# Docker
+*.pid
+*.sock

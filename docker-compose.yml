@@ -15,20 +15,19 @@ services:
   app:
     build: .
     container_name: app
-    command: bash -c "cd /src/app && yarn install && yarn start"
+    command: bash -c "cd /src/app && yarn install && HOST=0.0.0.0 yarn start"
     ports:
       - "3000:3000"
     volumes:
       - ${ADBREW_CODEBASE_PATH}:/src
+    environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
 
   mongo:
-    build: .
+    image: mongo:6.0
     container_name: mongo
     restart: always
     ports:
       - "27017:27017"
     volumes:
       - ${ADBREW_CODEBASE_PATH}/db/:/data/db
-    command: /usr/bin/mongod --bind_ip 0.0.0.0
-
-    
